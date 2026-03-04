@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>דף בית</title>
+
+  <style>
+    :root{
+      /* שמרתי את האופי של הרקע הבהיר-חמים מהצילום, רק מודרני יותר */
+      --bg: #efe6cf;
+      --bg2:#f5edd8;
+      --ink:#141414;
+      --muted:#4a4338;
+      --line: rgba(0,0,0,.14);
+      --card: rgba(255,255,255,.45);
+      --shadow: 0 18px 55px rgba(0,0,0,.12);
+      --shadow2: 0 10px 26px rgba(0,0,0,.12);
+      --radius: 22px;
+      --radius2: 16px;
+      --accent:#111;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans Hebrew", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(1200px 650px at 15% 10%, rgba(0,0,0,.05), transparent 60%),
+        radial-gradient(900px 520px at 85% 15%, rgba(0,0,0,.035), transparent 62%),
+        linear-gradient(180deg, var(--bg2), var(--bg));
+    }
+
+    a{color:inherit; text-decoration:none}
+    .wrap{max-width:1200px; margin:0 auto; padding:0 18px}
+
+    /* Topbar */
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      background: rgba(239,230,207,.82);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbarInner{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:14px; padding:14px 0;
+    }
+
+    /* Left: call pill */
+    .callPill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(0,0,0,.12);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+      font-weight:700;
+    }
+    .callPill:hover{transform: translateY(-1px); background: rgba(255,255,255,.7); box-shadow: 0 14px 30px rgba(0,0,0,.10)}
+    .callIcon{
+      width:34px; height:34px; border-radius: 999px;
+      display:grid; place-items:center;
+      background: rgba(0,0,0,.06);
+      border:1px solid rgba(0,0,0,.12);
+    }
+
+    /* Center nav */
+    .nav{
+      display:flex; align-items:center; justify-content:center;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+    .nav a{
+      padding:8px 10px;
+      border-radius: 12px;
+      font-weight:650;
+      color: rgba(0,0,0,.78);
+      transition: background .15s ease, transform .15s ease;
+      position:relative;
+    }
+    .nav a:hover{background: rgba(255,255,255,.42); transform: translateY(-1px)}
+    .nav a.active::after{
+      content:"";
+      position:absolute; right:10px; left:10px; bottom:4px;
+      height:2px; border-radius:999px;
+      background: rgba(0,0,0,.55);
+    }
+
+    /* Right: logo link (1.png) */
+    .logoLink{
+      display:inline-flex; align-items:center; justify-content:flex-end;
+      min-width: 180px;
+    }
+    .logoImg{
+      height:44px;
+      width:auto;
+      display:block;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.14));
+    }
+
+    /* Mobile */
+    .hamb{
+      display:none;
+      padding:10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.52);
+      border:1px solid rgba(0,0,0,.12);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      font-weight:750;
+    }
+    @media (max-width: 900px){
+      .nav{display:none}
+      .logoLink{min-width:auto}
+      .hamb{display:inline-flex}
+    }
+
+    /* Hero */
+    .hero{padding:26px 0 28px}
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:18px;
+      align-items:stretch;
+    }
+    @media (max-width: 980px){
+      .heroGrid{grid-template-columns:1fr}
+    }
+
+    .heroImage{
+      border-radius: var(--radius);
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.14);
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.25);
+      min-height: 320px;
+      position:relative;
+    }
+    .heroImage img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+
+    .heroCard{
+      border-radius: var(--radius);
+      border:1px solid rgba(0,0,0,.14);
+      box-shadow: var(--shadow);
+      background: rgba(255,255,255,.35);
+      padding:22px 20px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:12px;
+    }
+
+    .eyebrow{
+      font-weight:700;
+      color: rgba(0,0,0,.70);
+      letter-spacing:.2px;
+    }
+    h1{
+      margin:0;
+      font-size: clamp(34px, 4.2vw, 56px);
+      line-height:1.05;
+      letter-spacing:.2px;
+    }
+    .lead{
+      margin:0;
+      color: var(--muted);
+      font-size: 15.5px;
+      max-width: 64ch;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 8px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding:12px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,.16);
+      background: rgba(255,255,255,.52);
+      box-shadow: var(--shadow2);
+      font-weight:800;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.72); box-shadow: 0 14px 30px rgba(0,0,0,.12)}
+    .btn.primary{
+      background: rgba(0,0,0,.88);
+      color: #fff;
+      border-color: rgba(0,0,0,.88);
+    }
+    .btn.primary:hover{background: rgba(0,0,0,.95)}
+    .btn .chev{font-size:18px; line-height:1}
+
+    /* Sections */
+    section{padding:18px 0}
+    .sectionHead{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
+      margin-bottom: 10px;
+    }
+    .sectionHead h2{
+      margin:0;
+      font-size: 20px;
+      letter-spacing:.2px;
+    }
+    .sectionHead p{
+      margin:0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 72ch;
+    }
+
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 980px){ .grid3{grid-template-columns:1fr} }
+
+    .card{
+      border-radius: var(--radius2);
+      border:1px solid rgba(0,0,0,.14);
+      background: rgba(255,255,255,.35);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      padding:14px;
+    }
+    .card h3{margin:0 0 6px; font-size:16px}
+    .card p{margin:0; color:var(--muted); font-size:14px}
+    .card a.more{
+      display:inline-flex; margin-top:10px;
+      font-weight:800; color: rgba(0,0,0,.85);
+      padding:8px 10px; border-radius: 12px;
+      background: rgba(255,255,255,.45);
+      border:1px solid rgba(0,0,0,.12);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .card a.more:hover{transform: translateY(-1px); background: rgba(255,255,255,.70)}
+
+    /* Footer */
+    footer{
+      margin-top: 18px;
+      border-top:1px solid var(--line);
+      padding:22px 0 34px;
+      color: rgba(0,0,0,.72);
+      font-size: 13px;
+    }
+    .footRow{
+      display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap;
+    }
+
+    /* Mobile menu sheet */
+    .sheet{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      display:none;
+      z-index: 100;
+    }
+    .sheet.open{display:block}
+    .sheetPanel{
+      position:absolute;
+      top: 10px; right: 10px; left: 10px;
+      border-radius: 18px;
+      background: rgba(239,230,207,.96);
+      border:1px solid rgba(0,0,0,.14);
+      box-shadow: var(--shadow);
+      padding: 12px;
+    }
+    .sheetTop{display:flex; justify-content:space-between; align-items:center; gap:10px}
+    .sheetClose{
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(0,0,0,.14);
+      background: rgba(255,255,255,.55);
+      font-weight:800;
+      cursor:pointer;
+    }
+    .sheetNav{display:grid; gap:8px; margin-top:10px}
+    .sheetNav a{
+      padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(0,0,0,.14);
+      background: rgba(255,255,255,.45);
+      font-weight:800;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="wrap">
+      <div class="topbarInner">
+        <!-- שמאל: דבר איתנו -->
+        <a class="callPill" href="tel:0500000000" aria-label="דבר איתנו בטלפון">
+          <span class="callIcon" aria-hidden="true">📞</span>
+          <span>דבר איתנו</span>
+        </a>
+
+        <!-- מרכז: תפריט (קישורים לדפים/מקטעים) -->
+        <nav class="nav" aria-label="תפריט ראשי">
+          <a class="active" href="#home">דף בית</a>
+          <a href="#gallery">הגלריה</a>
+          <a href="#products">המוצרים שלנו</a>
+          <a href="#about">מי אנחנו</a>
+          <a href="#contact">צור קשר</a>
+        </nav>
+
+        <!-- מובייל: כפתור תפריט -->
+        <button class="hamb" id="openMenu" type="button">תפריט</button>
+
+        <!-- ימין: לוגו (1.png). בלי טקסט למעלה -->
+        <a class="logoLink" href="#home" aria-label="לוגו">
+          <img class="logoImg" src="1.png" alt="" />
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="wrap">
+    <section class="hero" id="home">
+      <div class="heroGrid">
+        <!-- תמונת הצד (2.png) -->
+        <div class="heroImage" aria-label="תמונה ראשית">
+          <img src="2.png" alt="" />
+        </div>
+
+        <!-- תוכן -->
+        <div class="heroCard">
+          <div class="eyebrow">מצות רכות וטעימות, ולקות מאד לאכילת הכזיתות</div>
+          <h1>מצות אבהתנא</h1>
+          <p class="lead">
+            הזמינו עוד היום את מצות אבהתנא ותיהנו מטעם של פסח אמיתי.
+            (אפשר להחליף כאן את הטקסט לתוכן המדויק שלכם.)
+          </p>
+
+          <div class="actions">
+            <a class="btn primary" href="#contact">
+              <span>צור קשר</span>
+              <span class="chev" aria-hidden="true">↩</span>
+            </a>
+            <a class="btn" href="#products">
+              <span>המוצרים שלנו</span>
+              <span class="chev" aria-hidden="true">«</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- מוצרים -->
+    <section id="products">
+      <div class="sectionHead">
+        <div>
+          <h2>המוצרים שלנו</h2>
+          <p>כאן תציג כרטיסים/מוצרים. כרגע זה תבנית עיצובית בלבד.</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <h3>מוצר לדוגמה 1</h3>
+          <p>תיאור קצר של המוצר. אפשר להוסיף מחיר/משקל/כשרות וכו׳.</p>
+          <a class="more" href="#contact">להזמנה</a>
+        </div>
+        <div class="card">
+          <h3>מוצר לדוגמה 2</h3>
+          <p>תיאור קצר של המוצר. אפשר להוסיף תגיות וכפתור.</p>
+          <a class="more" href="#contact">להזמנה</a>
+        </div>
+        <div class="card">
+          <h3>מוצר לדוגמה 3</h3>
+          <p>תיאור קצר של המוצר. אפשר להחליף לכל תוכן שתרצה.</p>
+          <a class="more" href="#contact">להזמנה</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- גלריה -->
+    <section id="gallery">
+      <div class="sectionHead">
+        <div>
+          <h2>הגלריה</h2>
+          <p>אם תרצה — אפשר להפוך את זה לגריד תמונות/מודאל. כרגע זה שלד עיצובי.</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="card"><h3>תמונה 1</h3><p>מקום לתמונה/כיתוב.</p></div>
+        <div class="card"><h3>תמונה 2</h3><p>מקום לתמונה/כיתוב.</p></div>
+        <div class="card"><h3>תמונה 3</h3><p>מקום לתמונה/כיתוב.</p></div>
+      </div>
+    </section>
+
+    <!-- מי אנחנו -->
+    <section id="about">
+      <div class="sectionHead">
+        <div>
+          <h2>מי אנחנו</h2>
+          <p>כאן תכתוב על העסק/המסורת/הייחוד. השארתי עיצוב נקי ומודרני.</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <h3>מסורת</h3>
+          <p>משפט/שניים שמספרים על המסורת והאיכות.</p>
+        </div>
+        <div class="card">
+          <h3>איכות</h3>
+          <p>משפט/שניים שמדגישים חומרי גלם ותהליך.</p>
+        </div>
+        <div class="card">
+          <h3>כשרות</h3>
+          <p>משפט/שניים על השגחה/סטנדרט.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- צור קשר -->
+    <section id="contact">
+      <div class="sectionHead">
+        <div>
+          <h2>צור קשר</h2>
+          <p>כפתורים מהירים + אפשר להוסיף טופס. כרגע שמתי קישורים בסיסיים.</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="card">
+          <h3>טלפון</h3>
+          <p>לחיצה תחייג ישירות.</p>
+          <a class="more" href="tel:0500000000">📞 דבר איתנו</a>
+        </div>
+        <div class="card">
+          <h3>אימייל</h3>
+          <p>לחיצה תפתח טיוטת מייל.</p>
+          <a class="more" href="mailto:info@example.com">✉️ כתוב לנו</a>
+        </div>
+        <div class="card">
+          <h3>וואטסאפ</h3>
+          <p>לחיצה תפתח שיחה.</p>
+          <a class="more" href="https://wa.me/972500000000" target="_blank" rel="noopener">💬 וואטסאפ</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footRow">
+        <div>© כל הזכויות שמורות</div>
+        <div>רקע וצבעים נשמרו לפי הבקשה, עם עיצוב מודרני ועדכני.</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Mobile Menu Sheet -->
+  <div class="sheet" id="sheet" aria-hidden="true">
+    <div class="sheetPanel" role="dialog" aria-modal="true" aria-label="תפריט">
+      <div class="sheetTop">
+        <strong>תפריט</strong>
+        <button class="sheetClose" id="closeMenu" type="button">סגור</button>
+      </div>
+      <div class="sheetNav">
+        <a href="#home">דף בית</a>
+        <a href="#gallery">הגלריה</a>
+        <a href="#products">המוצרים שלנו</a>
+        <a href="#about">מי אנחנו</a>
+        <a href="#contact">צור קשר</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const sheet = document.getElementById('sheet');
+    const openMenu = document.getElementById('openMenu');
+    const closeMenu = document.getElementById('closeMenu');
+
+    function setSheet(open){
+      if(open){
+        sheet.classList.add('open');
+        sheet.setAttribute('aria-hidden','false');
+      }else{
+        sheet.classList.remove('open');
+        sheet.setAttribute('aria-hidden','true');
+      }
+    }
+
+    openMenu?.addEventListener('click', ()=>setSheet(true));
+    closeMenu?.addEventListener('click', ()=>setSheet(false));
+    sheet?.addEventListener('click', (e)=>{
+      if(e.target === sheet) setSheet(false);
+    });
+
+    // סגירה אחרי לחיצה על לינק בתפריט מובייל
+    sheet.querySelectorAll('a').forEach(a=>{
+      a.addEventListener('click', ()=>setSheet(false));
+    });
+  </script>
+</body>
+</html>
